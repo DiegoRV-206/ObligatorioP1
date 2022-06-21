@@ -258,6 +258,7 @@ function onInfo(){
         show("infoLocal")
     }
 }
+"PRUEBA GIT"
 function onRate(){
     const inputRate = Number(document.querySelector("#inputRate").value)
     const reservaUserId = Number(this.getAttribute('data-id'));
