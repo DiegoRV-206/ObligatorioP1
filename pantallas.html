@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script type="text/javascript" src="./javaScript/functions.js"></script>
+    <script type="text/javascript" src="./javaScript/pantallas.js"></script>
+    <script type="text/javascript" src="./javaScript/classes.js"></script>
+    <!--Cargo el boostrap
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+      -->
+      <!--Cargo Flex-box de lobby users-->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet"> 
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" media="all" href="./CSS/estilos.css">
+    <link rel="dns-prefetch" href="https://fast.appcues.com">
+    
+    <link rel="dns-prefetch" href="https://fonts.googleapis.com">
+    
+    <script nonce="ySNzbHQqAOo="></script>
+    <style id="cm-font-family" class="cm-font-family" nonce="ySNzbHQqAOo=">
+  
+        .CodeMirror,
+        .console-logs .console-line,
+        .console-command-line-input,
+        .console-message,
+        .CodeMirror-hint {
+          font-family: SFMono-Regular, Consolas, Liberation Mono, Menlo,
+        monospace;
+        }
+      </style>
+      <style id="cm-font-size" nonce="ySNzbHQqAOo=">
+        .CodeMirror,
+        .console-logs .console-line,
+        .console-command-line-input,
+        .console-message,
+        .CodeMirror-hint {
+          font-size: 14px;
+        }
+        
+        
+      </style>
+    <title>Login</title>
+
+</head>
+<body>
+  <!--User side-->
+    <main id="LoginScreen">
+      <div class="loginScreen">
+        <div class="cont">
+            
+                
+            <h1>Welcome</h1>
+            <div class="btnLogin_SignUp">
+                <button id="login">Login</button>
+                <button id="signUp">Sign Up</button>
+            </div>
+            <form id="contenedor_login">
+                <input id="user" placeholder="Insert username ">
+                <br />
+                <input id="pass" placeholder="Insert password" type="password">
+                <br />
+                <button id="btnLogin">Login</button>
+            
+            
+            </form>
+        </div>
+      </div>
+    </main>
+    <main id="RegisterScreen">
+      <div class="registerScreen">
+        <div class="cont">
+                <h1>Welcome</h1>
+                <div class="btnLogin_SignUp">
+                    <button id="login">Login</button>
+                    <button id="signUp">Sign Up</button>
+                </div>
+
+                <form id="contenedor_registro">
+                    <input type="text" id="registerName" placeholder="Insert your name">
+                    <br />
+                    <br />
+                    <input type="text" id="registerUserName" placeholder="Insert username ">
+                    <br />
+                    <br />
+                    <input id="registerPass" placeholder="Insert password" type="password">
+                    <br />
+                    <br />
+                    <button id="btnRegister">Register</button>     
+    
+                </form>
+        
+        </div>
+    </div>
+    </main>
+    <main id="forLoginScreens"><!--Contenedor-->
+      <div id="contenedor">
+        <div id="cabezal" class="clearfix">
+          <ul id="navPrincipal">
+            <li>
+              <a id="btnHome">Home</a>
+            </li>
+            <li>
+              <a id="btnInfo">Information</a>
+            </li>
+            <li>
+              <a id="btnLogOut">Log Out</a>
+            </li>
+          </ul>     
+        </div>
+    </div>
+    </main>
+    <main id="LobbyUser"><!--Realizar reservas usuario-->
+      
+    <!--Traer username del array users-->
+      <h1 id="Homee"></h1>
+      
+      <div class="contenedor">
+        <div class="contenedor-conciertos">
+          <div class="card" style="background-image: url('./img/foto8.jpg')">
+            <div class="textos">
+              <h3>FalconMasters</h3>
+              <p>Theatre</p>
+            </div>
+          </div>
+          <div class="card" style="background-image: url('./img/foto1.jpg')">
+            <div class="textos">
+              <h3>SamusTheatres</h3>
+              <p>Theatre</p>
+            </div>
+          </div>
+          <div class="card" style="background-image: url('./img/foto10.jpg')">
+            <div class="textos">
+              <h3>GrappArte</h3>
+              <p>Museum</p>
+            </div>
+          </div>
+    
+          <div class="card" style="background-image: url('./img/foto4.jpg')">
+            <div class="textos">
+              <h3>PepesBurger</h3>
+              <p>Restaurant</p>
+            </div>
+          </div>
+          <div class="card" style="background-image: url('./img/foto5.jpg')">
+            <div class="textos">
+              <h3>El Asador</h3>
+              <p>Restaurant</p>
+            </div>
+          </div>
+          <div class="card" style="background-image: url('./img/foto6.jpg')">
+            <div class="textos">
+              <h3>Pizza Napoletana</h3>
+              <p>Restaurant</p>
+            </div>
+          </div>
+        </div>
+    
+        <div class="banner" style="background-image: url('./img/vertical.jpg')">
+          <h3>Our Service</h3>
+          <label class="labelReserve" for="SelectPlace" >Select Place</label>
+          <select class="selecReserve" required></select>
+          <br />
+          <label class="labelReserve" for="NumberOfGuests">Number of guests</label>
+          <input id="NumberOfGuests" type="number" required>
+
+          
+          <button class="boton">Make Reserve</button>
+          <p id="pReserva"></p>
+        </div>
+      </div>
+      
+    </main>
+    <main id="userInfo">
+      <h1 id="welcomeInfo"></h1>
+      <h2 id="subTitle"></h2>
+      <br />
+      <br />
+      <div id="pendings"></div>
+      <div id="endings"></div>
+      <p id="errorQ"></p>
+    </main>
+    <!--Local side-->
+    <main id="lobbyLocal">
+     
+      <!--Trae username del array users-->
+      <h1 id="Home"></h1>
+      
+      <!--Ver reservas Pendientes y finalizadas-->
+      <!--Cupo maximo, en caso de llenarse se deshabilita automaticamente-->
+      <!--Modificar cupo maximo-->
+      <!--Habilitar deshabilitar reservas-->
+      <p id=pCupos></p>
+      <br />
+      <label for="inputCupos">Modificar capacidad maxima</label>
+      <input id="inputCupos" type="text">
+      <button id="btnCupos">Modificar</button>
+      <p id="errorModCupos"></p>
+      <label for="EstadoReservas">Habilitar/deshabilitar reservas</label>
+      <button id="btnEstadoReservas">Habilitar/Deshabilitar</button>
+
+      <div id="statistics">
+        <p id="porcentaje"></p>
+        <p id="miCalificacion"></p>
+        <p id="totalReservas"></p>
+        <div id="tablaLocal"></div>
+      </div>
+      
+      
+      
+      
+      <div id="tabla">
+        <!--Insertar tabla de pendientes en JavaScript-->          
+      </div>
+      
+    </main>
+    <main id="infoLocal">
+      <!--Visualizar info estadistica
+      ** Porcentaje de ocupación del local
+      **Promedio de calificaciones del local y de todos los locales
+      -->
+    </main>
+    
+</body>
+</html>

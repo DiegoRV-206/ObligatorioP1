@@ -1,0 +1,16 @@
+{
+	"folders": [
+		{
+			"path": "javaScript"
+		},
+		{
+			"path": "."
+		},
+		{
+			"path": "img"
+		}
+	],
+	"settings": {
+		"liveServer.settings.multiRootWorkspaceName": "Obligatorio"
+	}
+}
