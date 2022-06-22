@@ -65,7 +65,13 @@ function onLogin(e){
     }
     
 }
+function cuposlocal(){
+    locales.forEach(function(local){
+        local.reservas.forEach(function(res){
 
+        })
+    })
+}
 function onReserve(){
     
 
@@ -73,25 +79,32 @@ function onReserve(){
     const inputGuests = Number(document.querySelector("#NumberOfGuests").value);
     const localSelected = Number(document.querySelector(".selecReserve").value);
     //const localSelected = Number(selectPlace.value);
-
     const local = searchLocal("id", localSelected)
     //Establecimos 10 como el numero de personas que puede llevar una reserva
     
-    let validacionGuests = inputGuests>0&& inputGuests<10;
+    let validacionGuests = inputGuests>0;
     //PROBLEMA QUE TENGO, AL SELECCIONAR UN LOCAL YA ME ENVIA EL LOCAL SELECCIONADO!!
     console.log(local)
     console.log(localSelected)
     //validaciones
     if(inputGuests !=""&&validacionGuests){
+        
         let pusheoReserva = true;
-            local.reservas.forEach(function(reserva){
-
-                if(loggedUser.id == reserva.idUser && reserva.status == "pendiente"){ 
-                    pusheoReserva = false;
-                }
-            })  
+        let maxResAtMoment = 0;
+        local.reservas.forEach(function(reserva){
+            if(loggedUser.id == reserva.idUser && reserva.status == "pendiente"){ 
+                pusheoReserva = false;
+            }
+            
+        })  
         if(pusheoReserva == true){
-            local.reservas.push(new Reserva(loggedUser.id,loggedUser.name, inputGuests, local.id));
+            if(inputGuests< local.cupos){
+                local.reservas.push(new Reserva(loggedUser.id,loggedUser.name, inputGuests, local.id));
+                local.cupos = local.cupos-inputGuests
+            }else{
+                document.querySelector("#pReserva").innerHTML = "El local no cuenta con el aforo suficiente";
+
+            }
         }else{
             document.querySelector("#pReserva").innerHTML = "Ya tiene una reserva en este local";
 
@@ -161,6 +174,7 @@ function onRegister(e){
 
 }
 //Funcionalidad de botones *HOME**INFO**LOGOUT**&&LobbyLocal(realizar reservas)
+let acumReservas = 0;
 
 function onInfo(){
     document.querySelector("#welcomeInfo").innerHTML = `Welcome ${loggedUser.name} !`;
@@ -365,6 +379,7 @@ function onLobbyLocal(){
     document.querySelector("#btnCupos").addEventListener("click",onCupos);
     document.querySelector("#pCupos").innerHTML = `La capacidad maxima del local es de ${localConnected.cupos} personas`;
     document.querySelector("#btnEstadoReservas").addEventListener("click", onStatus)
+    document.querySelector("#search").addEventListener("click",onSearch)
     const tabla = document.querySelector("#tabla");
     tabla.innerHTML = "";
     const porcentaje = document.querySelector("#porcentaje");
@@ -374,7 +389,7 @@ function onLobbyLocal(){
     //calculo de porcentaje
     localConnected.reservas.forEach(function(item){ 
         if(item.status == "pendiente"){
-            acumularPendientes = acumularPendientes+1
+            guestsNow= guestsNow + item.guests
         }
         if(item.status == "finalizada"){
             acumFinalizadas = acumFinalizadas+1
@@ -384,8 +399,8 @@ function onLobbyLocal(){
             cadaRate = cadaRate + item.rate;
         }
     })
-    let calculoPorcentaje = (localConnected.cupos*acumularPendientes)/100;
-    porcentaje.innerHTML = "El porcentaje de ocupación es "+ calculoPorcentaje;
+    let calculoPorcentaje = (guestsNow*100)/localConnected.cuposMax;
+    porcentaje.innerHTML = "El porcentaje de ocupación es del "+ calculoPorcentaje + "%";
     miCalificacion.innerHTML = "Mi rating es de "+cadaRate/acumMiCalificacion+ " puntos";
     totalReservas.innerHTML = "El total de reservas es de "+localConnected.reservas.length+" las cuales "+acumularPendientes+" se encuentran pendientes y "+acumFinalizadas+" finalizadas";
     const divTabla = document.querySelector("#tablaLocal");
@@ -407,15 +422,7 @@ function onLobbyLocal(){
                 cadaRateLocal = cadaRateLocal+item.rate;
                 acumCalificacionLocales= acumCalificacionLocales+1
             }
-            // else{
-            //     ratings = "No tiene calificaciones"
-            // }
-            // if(item.idUser>0){
-            //     console.log(item.idUser)
-            // }
-           
-         
-            
+             
             console.log(cadaRateLocal+" "+acumCalificacionLocales)
         })
 
@@ -479,6 +486,20 @@ function onLobbyLocal(){
         
     
 }
+function onSearch(e){
+    e.preventDefault()
+    const inputSearch = document.querySelector("#inputSearch").value
+
+    localConnected.reservas.forEach(function(item){
+        if(item.status == "pendiente"){
+            document.querySelector("#msjeSearch").innerHTML = item.name && item.name.indexOf(inputSearch);
+            
+        }
+    })
+        
+
+}
+let guestsNow=0;
 function onCupos(){
     const inputCupos = document.querySelector("#inputCupos").value;
     //consulta si tiene reservas finalizadas y hace:
@@ -496,7 +517,7 @@ function onCupos(){
     })
     if(encontroPendiente == false){
         localConnected.cupos = inputCupos;
-        
+        localConnected.cuposMax = inputCupos
     }else{
         console.log("tiene reservas pendientes,no puede modificar capacidad")
     }
@@ -522,6 +543,7 @@ function onFinalizar(e){
 
     if (reserva.idUser == reservaUserId && reserva.status == "pendiente") {
         reserva.status = "finalizada";
+        localConnected.cupos = localConnected.cupos + reserva.guests
         btn.setAttribute('disabled', 'disabled');
 
     }

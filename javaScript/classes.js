@@ -40,6 +40,7 @@ class Local {
         this.cupos = cupos;
         this.reservas = [];
         this.userOwned = idUser;
+        this.cuposMax = 50;
     }
 }
 
@@ -67,25 +68,28 @@ const locales = [
 ]
 
 
-// reservas pendientes obligatorias
+// reservas pendientes y finalizadas obligatorias
 const reservaMartin = new Reserva(1, "martin", 5, 3);
 locales[2].reservas.push(reservaMartin);
+locales[2].cupos = 45
 const reservaErre = new Reserva(9, "Renan", 6, 6);
 locales[5].reservas.push(reservaErre);
+locales[5].cupos = 44
 const reservaDanisa = new Reserva(10,"Danisa", 3, 1)
 locales[0].reservas.push(reservaDanisa);
-// reservas pendientes y finalizadas obligatorias
+locales[0].cupos = 47
 const reservaMiguel = new Reserva(11,"Miguel", 4, 2)
 reservaMiguel.status= "finalizada"
 locales[1].reservas.push(reservaMiguel);
 const reservaMiguel2 = new Reserva(11,"Miguel", 4, 4)
 locales[3].reservas.push(reservaMiguel2);
-
+locales[3].cupos = 46
 const reservaFlorencia = new Reserva(12,"Florencia", 2, 4)
 reservaFlorencia.status= "finalizada";
 locales[3].reservas.push(reservaFlorencia);
 const reservaFlorencia2 = new Reserva(12,"Florencia", 3, 5)
 locales[4].reservas.push(reservaFlorencia2);
+locales[4].cupos = 47
 
 
 
