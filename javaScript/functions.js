@@ -193,11 +193,12 @@ function onInfo(){
         hide("LobbyUser")
         show("userInfo")
         let tablita = `<table>
-                <tr><th colspan="5">Pendientes</th></tr>
+                <tr><th colspan="6">Pendientes</th></tr>
             <tr>
                 <th>Local</th>
                 <th>adres</th>
                 <th>Category</th>
+                <th>Guests</th>
                 <th>Picture</th>
                 <th>Status</th>
             </tr>`;
@@ -214,6 +215,7 @@ function onInfo(){
                         <td>${item.localName}</td>
                         <td>${item.address}</td>
                         <td>${item.type}</td>
+                        <td>${it.guests}</td>
                         <td>${item.image}</td>
                         <td>${it.status}<button style="color: #fbf5f5; background-color: black"class="btnCancel" ${disabled} data-id="${item.id}">Cancelar</button></td>
                         </tr>
@@ -227,11 +229,12 @@ function onInfo(){
             btn.addEventListener('click', onCancelUser);
         })
         let tablita2 = `<table> 
-            <tr><th colspan="6">Finalizadas</th></tr>
+            <tr><th colspan="7">Finalizadas</th></tr>
             <tr>
                 <th>Local</th>
                 <th>adres</th>
                 <th>Category</th>
+                <th>Guests</th>
                 <th>Picture</th>
                 <th>Status</th>
                 <th>Rating</th>
@@ -258,6 +261,7 @@ function onInfo(){
                         <td>${item.localName}</td>
                         <td>${item.address}</td>
                         <td>${item.type}</td>
+                        <td>${it.guests}</td>
                         <td>${item.image}</td>
                         <td>${it.status}</td>
                         <td><input id="inputRate" type="number" placeholder="ingrese su calificacion"><button class="btnRate" ${disabled} data-id="${item.id}">Rate</button><br /><p class="${item.localName}">${calificacion}</p></td>
@@ -285,8 +289,30 @@ function onInfo(){
                 }
             })
         })
+        let idLocalFav = 0;
+        let MaxCR = 0;
+        let nameLocalFav = "";
         
-        totalRes.innerHTML = `Hasta ahora realizaste ${misRes} reservas`;
+        locales.forEach(function(local){
+            local.reservas.forEach(function(reserv){
+                let cr =0;
+                console.log("ENTRO")
+                if(reserv.idUser == loggedUser.id){
+                    cr =cr+1
+                    console.log(cr)
+                }
+                if(cr>=MaxCR){
+                    MaxCR = cr
+                    idLocalFav = reserv.localID
+                }
+                
+                nameLocalFav = local.localName
+            
+                console.log(nameLocalFav)
+            })
+        })
+         
+        totalRes.innerHTML = `Hasta ahora realizaste ${misRes} reservas, y el local más visitado fue ${nameLocalFav}`;
         
         
     }else if(loggedUser.type == "local"){
@@ -486,17 +512,63 @@ function onLobbyLocal(){
         
     
 }
-function onSearch(e){
-    e.preventDefault()
+let ArraySearch = []
+let encontrado;
+function onSearch(){
     const inputSearch = document.querySelector("#inputSearch").value
-
+    const tablita3 = document.querySelector("#msjeSearch")
+    let coincidencias = 0;
+    let str = "";
     localConnected.reservas.forEach(function(item){
+        
         if(item.status == "pendiente"){
-            document.querySelector("#msjeSearch").innerHTML = item.name && item.name.indexOf(inputSearch);
-            
+            str = item.name
+            if(inputSearch == str.indexOf(inputSearch)){
+                coincidencias++
+            }
+            console.log(str.indexOf(inputSearch))
+            if(coincidencias>=1){
+                
+                
+                //cargar dentro de un for la tabla
+                let tablita = `<table> 
+                <tr><th colspan="4">Reservas</th></tr>
+                <tr>
+                    <th>id</th>
+                    <th>name</th>
+                    <th>Guests</th>
+                    <th>Status</th>
+                </tr>`;
+
+                localConnected.reservas.forEach(function(r){ 
+                let disabled = ""
+                if(r.status == "finalizada" || r.status == "cancelada") {
+                    disabled = 'disabled="disabled"'
+                }
+                    if(r.status == "pendiente" || r.status == "finalizada"){
+                    tablita += `
+                        <tr>
+                            <td>${r.idUser}</td>
+                            <td>${r.name}</td>
+                            <td>${r.guests}</td>
+                            <td>${r.status}<button class="btnFinalizar" ${disabled} data-id="${r.idUser}">Finalizar</button></td>
+
+                        </tr>
+                        `;
+                    }
+                })
+
+                
+                tablita += `</table>`;
+                tablita3.innerHTML = tablita;
+                document.querySelectorAll(".btnFinalizar").forEach(function (btn) {
+                    btn.addEventListener('click', onFinalizar);
+                })
+                //document.querySelector("#msjeSearch").innerHTML = localConnected.reservas[encontrado].name
+            }
         }
     })
-        
+    onSearch()
 
 }
 let guestsNow=0;
