@@ -44,7 +44,7 @@ class Local {
 }
 
 class Reserva {
-    constructor(idUser, name, guests,localID) {
+    constructor(idUser, name, guests, localID) {
         this.idUser = idUser;
         this.name = name;
         this.guests = guests;
@@ -78,7 +78,7 @@ locales[0].reservas.push(reservaDanisa);
 const reservaMiguel = new Reserva(11,"Miguel", 4, 2)
 reservaMiguel.status= "finalizada"
 locales[1].reservas.push(reservaMiguel);
-const reservaMiguel2 = new Reserva(11,"Miguel", 4, 3)
+const reservaMiguel2 = new Reserva(11,"Miguel", 4, 4)
 locales[3].reservas.push(reservaMiguel2);
 
 const reservaFlorencia = new Reserva(12,"Florencia", 2, 4)
@@ -92,5 +92,3 @@ locales[4].reservas.push(reservaFlorencia2);
 
 
 
-// Agrego una reserva al local (Pepe's burger)
-// recorro las reservas del local (Pepe' burger)

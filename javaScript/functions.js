@@ -165,8 +165,10 @@ function onRegister(e){
 function onInfo(){
     document.querySelector("#welcomeInfo").innerHTML = `Welcome ${loggedUser.name} !`;
     document.querySelector("#subTitle").innerHTML = `Your reserves for today ...`;
+    let totalRes = document.querySelector("#totalReservas")
+    totalRes.innerHTML = "";
+    const stadisticas = document.querySelector("#stadisticas")
     
-
     const tabla = document.querySelector("#pendings");
     tabla.innerHTML = "";
     const tabla2 = document.querySelector("#endings");
@@ -220,8 +222,9 @@ function onInfo(){
                 <th>Status</th>
                 <th>Rating</th>
             </tr>`;
-
+            let hayFinalizadas=false;
             locales.forEach(function(item){
+                
                 item.reservas.forEach(function(it){
                     let disabled = ""
                     if(it.rate != 0){
@@ -231,7 +234,11 @@ function onInfo(){
 
                     if(loggedUser.id == it.idUser && it.status == "finalizada"){ 
                         
-                        
+                        hayFinalizadas=true;
+                        let calificacion="No calificado";
+                        if(it.rate>0){
+                            calificacion=it.rate;
+                        }
                         tablita2 += `
                         <tr>
                         <td>${item.localName}</td>
@@ -239,7 +246,7 @@ function onInfo(){
                         <td>${item.type}</td>
                         <td>${item.image}</td>
                         <td>${it.status}</td>
-                        <td><input id="inputRate" type="number" placeholder="ingrese su calificacion"><button class="btnRate" ${disabled} data-id="${item.id}">Rate</button><br /><p class="${item.localName}"></p></td>
+                        <td><input id="inputRate" type="number" placeholder="ingrese su calificacion"><button class="btnRate" ${disabled} data-id="${item.id}">Rate</button><br /><p class="${item.localName}">${calificacion}</p></td>
                         </tr>
                         `;
 
@@ -250,7 +257,22 @@ function onInfo(){
         tablita2 += `</table>`;
         tabla2.innerHTML = tablita2;
         const btnRating = document.querySelector(".btnRate")
-        btnRating.addEventListener("click", onRate)
+        if(hayFinalizadas){
+
+            btnRating.addEventListener("click", onRate)
+        }
+        let misRes = 0;
+
+        locales.forEach(function(local){
+            local.reservas.forEach(function(res){
+                if(res.idUser == loggedUser.id){
+                    misRes = misRes+1
+                    
+                }
+            })
+        })
+        
+        totalRes.innerHTML = `Hasta ahora realizaste ${misRes} reservas`;
         
         
     }else if(loggedUser.type == "local"){
@@ -258,7 +280,6 @@ function onInfo(){
         show("infoLocal")
     }
 }
-"PRUEBA GIT"
 function onRate(){
     const inputRate = Number(document.querySelector("#inputRate").value)
     const reservaUserId = Number(this.getAttribute('data-id'));
@@ -369,27 +390,53 @@ function onLobbyLocal(){
     totalReservas.innerHTML = "El total de reservas es de "+localConnected.reservas.length+" las cuales "+acumularPendientes+" se encuentran pendientes y "+acumFinalizadas+" finalizadas";
     const divTabla = document.querySelector("#tablaLocal");
     divTabla.innerHTML = "";
-
+    let ratings=0;
+    let encontroLocal = false;
     let tablita2 = `<table> 
     <tr><th colspan="2">Estadisticas</th></tr>
     <tr>
         <th>Nombre de local</th>
         <th>Promedio de calificaciones de locales</th>
     </tr>`;
-
+    
+    
     locales.forEach(function(r){ 
+        acumCalificacionLocales=0
         r.reservas.forEach(function(item){
-            if(item.rate >=0) {
+            if(item.rate >0) {
                 cadaRateLocal = cadaRateLocal+item.rate;
                 acumCalificacionLocales= acumCalificacionLocales+1
-            } 
-            tablita2 += `
-                <tr>
-                    <td>${r.localName}</td>
-                    <td>${cadaRateLocal/acumCalificacionLocales}</td>
-                </tr>
-            `;
+            }
+            // else{
+            //     ratings = "No tiene calificaciones"
+            // }
+            // if(item.idUser>0){
+            //     console.log(item.idUser)
+            // }
+           
+         
+            
+            console.log(cadaRateLocal+" "+acumCalificacionLocales)
         })
+
+        if(acumCalificacionLocales == 0){
+            tablita2 += `
+            <tr>
+                <td>${r.localName}</td>
+                <td>No tiene calificaciones</td>
+            </tr>
+            `;
+            
+        }else{
+            ratings = cadaRateLocal/acumCalificacionLocales 
+            tablita2 += `
+            <tr>
+                <td>${r.localName}</td>
+                <td>${ratings}</td>
+            </tr>
+            `;
+        }
+      
     })
 
     tablita2 += `</table><br />`;
