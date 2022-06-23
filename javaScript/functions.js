@@ -5,7 +5,6 @@ let loggedScreen = "";
 let encontroPendiente = false;
 let modStatus = false;
 let tablon = false;
-console.log("cargo funciones")
 
 function show(id){
     document.querySelector(`#${id}`).style.display = "block";
@@ -65,32 +64,20 @@ function onLogin(e){
     }
     
 }
-function cuposlocal(){
-    locales.forEach(function(local){
-        local.reservas.forEach(function(res){
 
-        })
-    })
-}
 function onReserve(){
     
-
-
     const inputGuests = Number(document.querySelector("#NumberOfGuests").value);
     const localSelected = Number(document.querySelector(".selecReserve").value);
     //const localSelected = Number(selectPlace.value);
     const local = searchLocal("id", localSelected)
-    //Establecimos 10 como el numero de personas que puede llevar una reserva
     
     let validacionGuests = inputGuests>0;
-    //PROBLEMA QUE TENGO, AL SELECCIONAR UN LOCAL YA ME ENVIA EL LOCAL SELECCIONADO!!
-    console.log(local)
-    console.log(localSelected)
+    
     //validaciones
     if(inputGuests !=""&&validacionGuests){
         
         let pusheoReserva = true;
-        let maxResAtMoment = 0;
         local.reservas.forEach(function(reserva){
             if(loggedUser.id == reserva.idUser && reserva.status == "pendiente"){ 
                 pusheoReserva = false;
@@ -174,7 +161,6 @@ function onRegister(e){
 
 }
 //Funcionalidad de botones *HOME**INFO**LOGOUT**&&LobbyLocal(realizar reservas)
-let acumReservas = 0;
 
 function onInfo(){
     document.querySelector("#welcomeInfo").innerHTML = `Welcome ${loggedUser.name} !`;
@@ -187,8 +173,17 @@ function onInfo(){
     tabla.innerHTML = "";
     const tabla2 = document.querySelector("#endings");
     tabla2.innerHTML = "";
-    
-
+    let cuentoUsuario =0;
+    let cantidadRes =0;
+    locales.forEach(function(item){
+        item.reservas.forEach(function(it){
+            
+            if(loggedUser.name == it.name && (it.status == "finalizada" || it.status == "cancelada" || it.status == "pendiente")){
+                cuentoUsuario++
+                console.log("entro")
+            }
+        })
+    })
     if(loggedUser.type == "persona"){
         hide("LobbyUser")
         show("userInfo")
@@ -228,8 +223,9 @@ function onInfo(){
             document.querySelectorAll(".btnCancel").forEach(function (btn) {
             btn.addEventListener('click', onCancelUser);
         })
+        
         let tablita2 = `<table> 
-            <tr><th colspan="7">Finalizadas</th></tr>
+            <tr><th colspan="9">Finalizadas</th></tr>
             <tr>
                 <th>Local</th>
                 <th>adres</th>
@@ -237,18 +233,25 @@ function onInfo(){
                 <th>Guests</th>
                 <th>Picture</th>
                 <th>Status</th>
+                <th>Total de reservas del local</th>
+                <th>Porcentaje de sus reservas</th>
                 <th>Rating</th>
+                
             </tr>`;
             let hayFinalizadas=false;
+            
+            
+            
             locales.forEach(function(item){
-                
+
                 item.reservas.forEach(function(it){
                     let disabled = ""
                     if(it.rate != 0){
                         disabled = 'disabled="disabled"'
                         
                     }
-
+                    
+                    
                     if(loggedUser.id == it.idUser && it.status == "finalizada"){ 
                         
                         hayFinalizadas=true;
@@ -256,6 +259,12 @@ function onInfo(){
                         if(it.rate>0){
                             calificacion=it.rate;
                         }
+                        if(item.id == it.localID && loggedUser.name == it.name && (it.status == "pendiente" || it.status == "finalizada" || it.status == "cancelada")){
+                            
+                            cantidadRes = item.reservas.length
+                            console.log(cantidadRes+"cantR")
+                        }
+                        
                         tablita2 += `
                         <tr>
                         <td>${item.localName}</td>
@@ -264,12 +273,14 @@ function onInfo(){
                         <td>${it.guests}</td>
                         <td>${item.image}</td>
                         <td>${it.status}</td>
+                        <td>Este local tiene ${item.reservas.length} reservas actual(es)</td>
+                        <td>${(cuentoUsuario*100)/item.reservas.length}%</td>
                         <td><input id="inputRate" type="number" placeholder="ingrese su calificacion"><button class="btnRate" ${disabled} data-id="${item.id}">Rate</button><br /><p class="${item.localName}">${calificacion}</p></td>
+                        
                         </tr>
                         `;
-
+                        console.log(cuentoUsuario)
                     }  
-
                 })
             }) 
         tablita2 += `</table>`;
@@ -296,10 +307,9 @@ function onInfo(){
         locales.forEach(function(local){
             local.reservas.forEach(function(reserv){
                 let cr =0;
-                console.log("ENTRO")
                 if(reserv.idUser == loggedUser.id){
                     cr =cr+1
-                    console.log(cr)
+                    
                 }
                 if(cr>=MaxCR){
                     MaxCR = cr
@@ -308,7 +318,6 @@ function onInfo(){
                 
                 nameLocalFav = local.localName
             
-                console.log(nameLocalFav)
             })
         })
          
@@ -347,28 +356,17 @@ function onRate(){
 }
 function tabla(){
 
-    if(modStatus == true&&tablon==true){
-        onLoad()
-        const selectPlace = document.querySelector(".selecReserve"); 
-        locales.forEach(function(local){
-        
-            if(local.status == "available"){
-                selectPlace.innerHTML += `
-                <option value="${local.id}">${local.localName}</option>
-                `;
-            }
-        })
-    }else if(tablon == false){
-        const selectPlace = document.querySelector(".selecReserve"); 
-        locales.forEach(function(local){
-        
-            if(local.status == "available"){
-                selectPlace.innerHTML += `
-                <option value="${local.id}">${local.localName}</option>
-                `;
-            }
-        })
-    }
+    const selectPlace = document.querySelector(".selecReserve"); 
+    selectPlace.innerHTML = "";
+    locales.forEach(function(local){
+    
+        if(local.status == "available"){
+            selectPlace.innerHTML += `
+            <option value="${local.id}">${local.localName}</option>
+            `;
+        }
+    })
+    
 }
 function onHome(){
     if(loggedUser.type == "persona"){
@@ -391,6 +389,11 @@ function toLogin(e){ //Voy al login
     }
     show("LoginScreen");
     loggedUser = null;
+    document.querySelector("#user").value = "";
+    
+    document.querySelector("#pass").value = "";
+
+    
     
 }
 function onLobbyLocal(){
@@ -432,7 +435,6 @@ function onLobbyLocal(){
     const divTabla = document.querySelector("#tablaLocal");
     divTabla.innerHTML = "";
     let ratings=0;
-    let encontroLocal = false;
     let tablita2 = `<table> 
     <tr><th colspan="2">Estadisticas</th></tr>
     <tr>
@@ -440,16 +442,13 @@ function onLobbyLocal(){
         <th>Promedio de calificaciones de locales</th>
     </tr>`;
     
-    
     locales.forEach(function(r){ 
         acumCalificacionLocales=0
         r.reservas.forEach(function(item){
             if(item.rate >0) {
                 cadaRateLocal = cadaRateLocal+item.rate;
                 acumCalificacionLocales= acumCalificacionLocales+1
-            }
-             
-            console.log(cadaRateLocal+" "+acumCalificacionLocales)
+            }     
         })
 
         if(acumCalificacionLocales == 0){
@@ -517,58 +516,55 @@ let encontrado;
 function onSearch(){
     const inputSearch = document.querySelector("#inputSearch").value
     const tablita3 = document.querySelector("#msjeSearch")
-    let coincidencias = 0;
-    let str = "";
+    tablita3.innerHTML = "";
+
     localConnected.reservas.forEach(function(item){
-        
+
         if(item.status == "pendiente"){
-            str = item.name
-            if(inputSearch == str.indexOf(inputSearch)){
-                coincidencias++
+
+            if(item.name.includes(inputSearch)){
+                ArraySearch.push(item)
+            }else{
+                alert("No hay resultados para su busqueda")
             }
-            console.log(str.indexOf(inputSearch))
-            if(coincidencias>=1){
-                
-                
-                //cargar dentro de un for la tabla
-                let tablita = `<table> 
-                <tr><th colspan="4">Reservas</th></tr>
-                <tr>
-                    <th>id</th>
-                    <th>name</th>
-                    <th>Guests</th>
-                    <th>Status</th>
-                </tr>`;
 
-                localConnected.reservas.forEach(function(r){ 
-                let disabled = ""
-                if(r.status == "finalizada" || r.status == "cancelada") {
-                    disabled = 'disabled="disabled"'
-                }
-                    if(r.status == "pendiente" || r.status == "finalizada"){
-                    tablita += `
-                        <tr>
-                            <td>${r.idUser}</td>
-                            <td>${r.name}</td>
-                            <td>${r.guests}</td>
-                            <td>${r.status}<button class="btnFinalizar" ${disabled} data-id="${r.idUser}">Finalizar</button></td>
+        }
 
-                        </tr>
-                        `;
-                    }
-                })
+    })   
+    let tablita;
+    if(ArraySearch.length > 0){  
+        tablita = `<table>
+                    <tr><th colspan="4">Resultado de busqueda</th></tr>
+                    <tr>
+                        <th>id</th>
+                        <th>name</th>
+                        <th>Guests</th>
+                        <th>Status</th>
+                    </tr>`;
+                    ArraySearch.forEach(function(r){
+                        let disabled = ""
+                        if(r.status == "finalizada" || r.status == "cancelada") {
+                            disabled = 'disabled="disabled"'
+                        }
 
-                
-                tablita += `</table>`;
+                        if(r.status == "pendiente" || r.status == "finalizada"){
+                            tablita += `
+                            <tr>
+                                <td>${r.idUser}</td>
+                                <td>${r.name}</td>
+                                <td>${r.guests}</td>
+                                <td>${r.status}<button class="btnFinalizar" ${disabled} data-id="${r.idUser}">Finalizar</button></td>
+                            </tr>
+                            `;
+                        }
+                    })
+                    tablita += `</table>`;
                 tablita3.innerHTML = tablita;
+    }                
                 document.querySelectorAll(".btnFinalizar").forEach(function (btn) {
                     btn.addEventListener('click', onFinalizar);
+
                 })
-                //document.querySelector("#msjeSearch").innerHTML = localConnected.reservas[encontrado].name
-            }
-        }
-    })
-    onSearch()
 
 }
 let guestsNow=0;
@@ -584,17 +580,14 @@ function onCupos(){
                     encontroPendiente = true;
                 }
             }
-        })
-        
+        })   
     })
     if(encontroPendiente == false){
         localConnected.cupos = inputCupos;
         localConnected.cuposMax = inputCupos
     }else{
-        console.log("tiene reservas pendientes,no puede modificar capacidad")
+        document.querySelector("#errorModAforo").innerHTML = "Tiene reservas pendientes, no puede modificar cupos"
     }
-    
-    
     onLobbyLocal()
 }
 function onStatus(){
@@ -610,8 +603,8 @@ function onFinalizar(e){
     e.preventDefault();
     //cambiar estado de reserva
     const reservaUserId = Number(this.getAttribute('data-id'));
-  const btn = this;
-  localConnected.reservas.forEach(function (reserva) {
+    const btn = this;
+    localConnected.reservas.forEach(function (reserva) {
 
     if (reserva.idUser == reservaUserId && reserva.status == "pendiente") {
         reserva.status = "finalizada";
@@ -622,6 +615,7 @@ function onFinalizar(e){
   });
   // Esto vuelve a dibujar la nueva tabla con un to-do menos
   onLobbyLocal();
+  onSearch()
   
 }
 let newReservas = [];
@@ -647,14 +641,14 @@ function onCancelUser(e){
 
             if(i.status == "pendiente"){
                 newReservas.push(new Reserva(i.idUser,i.name,i.guests,i.localID));
-
+                
             }
         })
     });
     locales.reservas = newReservas 
-
-    
     onInfo()
+    
+    
 }
 function searchLocal(key, value) {
     let local = null;
@@ -679,6 +673,3 @@ function pantallas(){
     
     return loggedScreen;
 }
-//Cambiar finalizar por cancelar y pushear el nuevo array
-//Info estadistica
-//Colocar errores

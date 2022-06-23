@@ -524,3 +524,12 @@ input[type="button"] {
   text-decoration: none;
   color: #fff;
 }
+#buscadorZone{
+  margin: 0px 0 0 1074px;
+}
+#inputSearch{
+  width: 245px;
+  background-color: #303036;
+  color: #fff;
+  border-radius: 5px;
+}
