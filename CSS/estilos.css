@@ -74,6 +74,13 @@
   width: 73px;
   height: 20px;
 }
+#loginn{
+  background-color: #30303680;
+  color: #FFFAFF;
+  border: 1px solid #0d020282;;
+  width: 73px;
+  height: 20px;
+}
 #signUp{
   background-color: #30303680;
   color: #FFFAFF;
@@ -109,8 +116,8 @@
 .registerScreen .cont{
   background-color: rgba(12, 9, 9, 0.774);
   margin: 10px auto;
-  width: 600px;
-  height: 400px;
+  width: 702px;
+  height: 598px;
   padding: 70px;
 }
 #contenedor_registro #btnRegister{

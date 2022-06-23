@@ -3,9 +3,6 @@ let localConnected = null;
 let IdUser = 0;
 let loggedScreen = "";
 let encontroPendiente = false;
-let modStatus = false;
-let tablon = false;
-
 function show(id){
     document.querySelector(`#${id}`).style.display = "block";
 }
@@ -14,14 +11,12 @@ function hide(id){
 }
 
 function onLogin(e){
+    
     e.preventDefault();
     const inputUser = document.querySelector("#user").value;
     const inputPass = document.querySelector("#pass").value;
-    const btnLogin = document.querySelector("#login");
-    btnLogin.addEventListener("click",onLogin);//cambiar onLogin por la ventana a la que me va a direccionar
-    const btnRegister = document.querySelector("#btnRegister");
-    btnRegister.addEventListener("click",onRegister);
-
+    
+    const inputUserConvertido = inputUser.toLowerCase()
     localConnected = null;
 
     //Validaciones para logearse
@@ -30,10 +25,11 @@ function onLogin(e){
         peoples.push({pass:password});
         */
        for(let i=0; i<users.length;i++){
-           if(users[i].username==inputUser && users[i].password==inputPass){
+           if(users[i].username==inputUserConvertido && users[i].password==inputPass){
                 loggedUser = users[i] 
                 document.querySelector("#Homee").innerHTML = `Welcome ${loggedUser.name}`;
             }
+         
 
         }
         if(loggedUser.type == "persona"){
@@ -53,14 +49,9 @@ function onLogin(e){
             show("forLoginScreens")
             onLobbyLocal()
 
-        }else{
-            alert("contra o usario incorrecta");
-
         }
-     
+        
        
-    }else{
-        alert("Debe completar los campos");
     }
     
 }
@@ -71,7 +62,6 @@ function onReserve(){
     const localSelected = Number(document.querySelector(".selecReserve").value);
     //const localSelected = Number(selectPlace.value);
     const local = searchLocal("id", localSelected)
-    
     let validacionGuests = inputGuests>0;
     
     //validaciones
@@ -87,6 +77,23 @@ function onReserve(){
         if(pusheoReserva == true){
             if(inputGuests< local.cupos){
                 local.reservas.push(new Reserva(loggedUser.id,loggedUser.name, inputGuests, local.id));
+                //local.contador.push(new Contador(local.id, getAutoIncrementId(local.contador)))
+                
+                    loggedUser.contador.forEach(function(it){
+
+                        
+                        if(it.userName == loggedUser.name){
+                            it.contadorRes = it.contadorRes+1
+                        }
+                        
+                        if(it.userName != loggedUser.name){
+                            users.contador.push(new Contador(local.id, loggedUser.name))
+                            it.contadorRes = it.contadorRes+1
+
+                        }
+                        
+                    })
+                
                 local.cupos = local.cupos-inputGuests
             }else{
                 document.querySelector("#pReserva").innerHTML = "El local no cuenta con el aforo suficiente";
@@ -100,13 +107,15 @@ function onReserve(){
     }
 }
 function onRegister(e){
+    hide("LoginScreen")
+    show("RegisterScreen")
     e.preventDefault();
     const registerName = document.querySelector("#registerName").value;
     const registerUserName = document.querySelector("#registerUserName").value;
     const registerPass = document.querySelector("#registerPass").value;
     const btnLogin = document.querySelector("#login");
-    btnLogin.addEventListener("click",onLogin);
-    let newUser = null;
+    btnLogin.addEventListener("click",toLogin);
+    document.querySelector("#btnRegister").addEventListener("click",onLogin)
     let validCharacter = false;
   
     let chararcterMayus = false;
@@ -114,53 +123,47 @@ function onRegister(e){
     let characterMinus = false;
     //validaciones para contraseña
     
-    if(registerName != "" && registerUserName !="" && registerPass !=""){
+  
 
-        for(let i=0; i <= registerPass.length-1;i++){
-            
-            if(registerPass.charCodeAt(i)>=65 && registerPass.charCodeAt(i)<=90){
-                chararcterMayus= true;
-            }
-            if(registerPass.charCodeAt(i)>=97 && registerPass.charCodeAt(i)<=122){
-                characterMinus= true;
-            }
-            if(registerPass.charCodeAt(i)>=48 && registerPass.charCodeAt(i)<=57){
-                characterNumber= true;
-            }             
+    for(let i=0; i <= registerPass.length-1;i++){
+        
+        if(registerPass.charCodeAt(i)>=65 && registerPass.charCodeAt(i)<=90){
+            chararcterMayus= true;
         }
-        if(characterMinus==true&&characterNumber==true&&chararcterMayus==true){
-            validCharacter = true;
-        }else if(validCharacter == false){
-            alert("Tu contraseña no cumple con los requisitos");
+        if(registerPass.charCodeAt(i)>=97 && registerPass.charCodeAt(i)<=122){
+            characterMinus= true;
         }
-    }else{
-        alert("No dejes los campos vacios");
+        if(registerPass.charCodeAt(i)>=48 && registerPass.charCodeAt(i)<=57){
+            characterNumber= true;
+        }             
     }
-    
-    
-    let validaRegisterPass = registerPass.length>=6&&validCharacter;
+    if(characterMinus==true&&characterNumber==true&&chararcterMayus==true){
+        validCharacter = true;
+    }
+    let validaRegisterPass = registerPass.length>=6&&validCharacter==true;
 
     //validamos que el nombre de usuario no existe antes, que los campos estén completos y que la contraseña cumpla los requisitos
-    if(validaRegisterPass){
-          let x = null;
-          let existe = false;
+    if(validaRegisterPass==true){
+        let existe = false;
         users.forEach(function(value){
             if(registerUserName == value.username){
                 alert("El usuario ya existe") 
                 existe = true;
-            }else{
-                newUser = x;
             }
         });
-        if(newUser == x && existe == false){
-            users.push(new User(getAutoIncrementId(),registerName, registerUserName,registerPass,"persona"));
+        if(existe == false){
+            users.push(new User(getAutoIncrementId(users),registerName, registerUserName.toLowerCase(),registerPass,"persona"));
             loggedScreen = "#RegisterScreen" 
+            hide("RegisterScreen")
+            show("LoginScreen")
+            alert("Usuario creado exitosamente")
         }
 
     }
 
 }
 //Funcionalidad de botones *HOME**INFO**LOGOUT**&&LobbyLocal(realizar reservas)
+let resusuario=0;
 
 function onInfo(){
     document.querySelector("#welcomeInfo").innerHTML = `Welcome ${loggedUser.name} !`;
@@ -168,22 +171,11 @@ function onInfo(){
     let totalRes = document.querySelector("#totalReservas")
     totalRes.innerHTML = "";
     const stadisticas = document.querySelector("#stadisticas")
-    
     const tabla = document.querySelector("#pendings");
     tabla.innerHTML = "";
     const tabla2 = document.querySelector("#endings");
     tabla2.innerHTML = "";
-    let cuentoUsuario =0;
-    let cantidadRes =0;
-    locales.forEach(function(item){
-        item.reservas.forEach(function(it){
-            
-            if(loggedUser.name == it.name && (it.status == "finalizada" || it.status == "cancelada" || it.status == "pendiente")){
-                cuentoUsuario++
-                console.log("entro")
-            }
-        })
-    })
+    
     if(loggedUser.type == "persona"){
         hide("LobbyUser")
         show("userInfo")
@@ -246,41 +238,45 @@ function onInfo(){
 
                 item.reservas.forEach(function(it){
                     let disabled = ""
-                    if(it.rate != 0){
-                        disabled = 'disabled="disabled"'
-                        
-                    }
-                    
-                    
-                    if(loggedUser.id == it.idUser && it.status == "finalizada"){ 
-                        
-                        hayFinalizadas=true;
-                        let calificacion="No calificado";
-                        if(it.rate>0){
-                            calificacion=it.rate;
-                        }
-                        if(item.id == it.localID && loggedUser.name == it.name && (it.status == "pendiente" || it.status == "finalizada" || it.status == "cancelada")){
+                        if(it.rate != 0){
+                            disabled = 'disabled="disabled"'
                             
-                            cantidadRes = item.reservas.length
-                            console.log(cantidadRes+"cantR")
                         }
+                        users.forEach(function(usuario){
+                            usuario.contador.forEach(function(conta){
+                                if(conta.userName == loggedUser.name && conta.identificador == item.id){
+                                    resusuario = conta.contadorRes
+                                }
+                                if(conta.userName != loggedUser.name){
+                                   resusuario = 0;
+                                }
+                            })
+                        })
                         
-                        tablita2 += `
-                        <tr>
-                        <td>${item.localName}</td>
-                        <td>${item.address}</td>
-                        <td>${item.type}</td>
-                        <td>${it.guests}</td>
-                        <td>${item.image}</td>
-                        <td>${it.status}</td>
-                        <td>Este local tiene ${item.reservas.length} reservas actual(es)</td>
-                        <td>${(cuentoUsuario*100)/item.reservas.length}%</td>
-                        <td><input id="inputRate" type="number" placeholder="ingrese su calificacion"><button class="btnRate" ${disabled} data-id="${item.id}">Rate</button><br /><p class="${item.localName}">${calificacion}</p></td>
-                        
-                        </tr>
-                        `;
-                        console.log(cuentoUsuario)
-                    }  
+                        if(loggedUser.id == it.idUser && it.status == "finalizada"){ 
+                            
+                            hayFinalizadas=true;
+                            let calificacion="No calificado";
+                            if(it.rate>0){
+                                calificacion=it.rate;
+                            }
+                            
+                            
+                            tablita2 += `
+                            <tr>
+                            <td>${item.localName}</td>
+                            <td>${item.address}</td>
+                            <td>${item.type}</td>
+                            <td>${it.guests}</td>
+                            <td>${item.image}</td>
+                            <td>${it.status}</td>
+                            <td>Este local tiene ${item.reservas.length} reservas actual(es)</td>
+                            <td>${(resusuario*100)/item.reservas.length}%</td>
+                            <td><input id="inputRate" type="number" placeholder="ingrese su calificacion"><button class="btnRate" ${disabled} data-id="${item.id}">Rate</button><br /><p class="${item.localName}">${calificacion}</p></td>
+                            
+                            </tr>
+                            `;
+                        }   
                 })
             }) 
         tablita2 += `</table>`;
@@ -354,7 +350,7 @@ function onRate(){
     
     
 }
-function tabla(){
+function tabla(){//es el select que muestra los locales a reservar
 
     const selectPlace = document.querySelector(".selecReserve"); 
     selectPlace.innerHTML = "";
@@ -368,7 +364,7 @@ function tabla(){
     })
     
 }
-function onHome(){
+function onHome(){ //esconde y muestra pantallas
     if(loggedUser.type == "persona"){
         hide("userInfo")
         show("LobbyUser")
@@ -408,6 +404,7 @@ function onLobbyLocal(){
     document.querySelector("#btnCupos").addEventListener("click",onCupos);
     document.querySelector("#pCupos").innerHTML = `La capacidad maxima del local es de ${localConnected.cupos} personas`;
     document.querySelector("#btnEstadoReservas").addEventListener("click", onStatus)
+    document.querySelector("#btnHabilitar").addEventListener("click", onStatusOK);
     document.querySelector("#search").addEventListener("click",onSearch)
     const tabla = document.querySelector("#tabla");
     tabla.innerHTML = "";
@@ -592,13 +589,17 @@ function onCupos(){
 }
 function onStatus(){
     localConnected.status = "ocupado";
-    modStatus = true;
-    tablon = true;
-    console.log("cambio a ocupado")
     onInfo()
     show("lobbyLocal")
+    document.querySelector("#msjStatus").innerHTML = "Se han deshabilitado las reservas a los clientes"
 }
+function onStatusOK(){
+    localConnected.status = "available";
+    onInfo()
+    show("lobbyLocal")
+    document.querySelector("#msjStatus").innerHTML = "Se han habilitado las reservas a los clientes"
 
+}
 function onFinalizar(e){
     e.preventDefault();
     //cambiar estado de reserva

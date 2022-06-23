@@ -1,8 +1,7 @@
 window.addEventListener("load",onLoad);
 function onLoad(){
     //BOTONES PANTALLA LOGIN
-    const btnLogin = document.querySelector("#login");
-    const btnSignUp = document.querySelector("#signUp");
+    
     const login = document.querySelector("#btnLogin");
     login.addEventListener("click",onLogin);
     //BOTONES PANTALLA REGISTRO
@@ -22,10 +21,17 @@ function onLoad(){
     const btnHome = document.querySelector("#btnHome");
     btnHome.addEventListener("click",onHome)
 
-    
+    const btnSignUp = document.querySelector("#signUp");
+    btnSignUp.addEventListener("click",onRegister);
+    const btnLogin = document.querySelector("#loginn");
+    btnLogin.addEventListener("click",btLogin)
     
     //PROBLEMAS:
     /* La tabla... Cuando deshabilito el local me tira error xq no cargó la tabla */    
 }
+function btLogin(){
+    hide("RegisterScreen")
+    show("LoginScreen")
 
+}
 

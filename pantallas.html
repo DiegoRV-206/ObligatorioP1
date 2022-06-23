@@ -77,18 +77,18 @@
         <div class="cont">
                 <h1>Welcome</h1>
                 <div class="btnLogin_SignUp">
-                    <button id="login">Login</button>
+                    <button id="loginn">Login</button>
                     <button id="signUp">Sign Up</button>
                 </div>
 
                 <form id="contenedor_registro">
-                    <input type="text" id="registerName" placeholder="Insert your name">
+                    <input type="text" id="registerName" placeholder="Insert your name" required>
                     <br />
                     <br />
-                    <input type="text" id="registerUserName" placeholder="Insert username ">
+                    <input type="text" id="registerUserName" placeholder="Insert username " required>
                     <br />
                     <br />
-                    <input id="registerPass" placeholder="Insert password" type="password">
+                    <input id="registerPass" placeholder="Insert password" type="password" required>
                     <br />
                     <br />
                     <button id="btnRegister">Register</button>     
@@ -211,7 +211,9 @@
       <p id="errorModCupos"></p>
       <br />
       <label for="EstadoReservas">Habilitar/deshabilitar reservas</label>
-      <button id="btnEstadoReservas">Habilitar/Deshabilitar</button>
+      <button id="btnEstadoReservas">Deshabilitar</button>
+      <button id="btnHabilitar">Habilitar</button>
+      <p id="msjStatus"></p>
 
       <div id="statistics">
         <p id="porcentaje"></p>
