@@ -22,10 +22,11 @@ function onLoad(){
     btnHome.addEventListener("click",onHome)
 
     const btnSignUp = document.querySelector("#signUp");
-    btnSignUp.addEventListener("click",onRegister);
+    btnSignUp.addEventListener("click",showRegister);
     const btnLogin = document.querySelector("#loginn");
     btnLogin.addEventListener("click",btLogin)
     
+
     //PROBLEMAS:
     /* La tabla... Cuando deshabilito el local me tira error xq no cargó la tabla */    
 }
@@ -33,5 +34,9 @@ function btLogin(){
     hide("RegisterScreen")
     show("LoginScreen")
 
+}
+function showRegister(){
+    hide("LoginScreen")
+    show("RegisterScreen")
 }
 

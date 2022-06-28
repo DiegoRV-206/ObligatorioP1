@@ -15,7 +15,7 @@ function onLogin(e){
     e.preventDefault();
     const inputUser = document.querySelector("#user").value;
     const inputPass = document.querySelector("#pass").value;
-    
+    let noIngreso= false;
     const inputUserConvertido = inputUser.toLowerCase()
     localConnected = null;
 
@@ -25,12 +25,18 @@ function onLogin(e){
         peoples.push({pass:password});
         */
        for(let i=0; i<users.length;i++){
+        
            if(users[i].username==inputUserConvertido && users[i].password==inputPass){
                 loggedUser = users[i] 
                 document.querySelector("#Homee").innerHTML = `Welcome ${loggedUser.name}`;
             }
-         
+            if(inputUser != users[i].username || inputPass != users[i].password){
+                noIngreso = true;
+            }
 
+        }
+        if(noIngreso = true){
+            alert("Nombre o contraseña incorrecta")
         }
         if(loggedUser.type == "persona"){
             hide("LoginScreen");
@@ -52,6 +58,13 @@ function onLogin(e){
         }
         
        
+    }else{
+        if(inputUser == "" || inputPass == ""){
+            alert("No deje campos vacios")
+        }
+        
+        
+        
     }
     
 }
@@ -115,7 +128,7 @@ function onRegister(e){
     const registerPass = document.querySelector("#registerPass").value;
     const btnLogin = document.querySelector("#login");
     btnLogin.addEventListener("click",toLogin);
-    document.querySelector("#btnRegister").addEventListener("click",onLogin)
+    
     let validCharacter = false;
   
     let chararcterMayus = false;
@@ -143,24 +156,30 @@ function onRegister(e){
     let validaRegisterPass = registerPass.length>=6&&validCharacter==true;
 
     //validamos que el nombre de usuario no existe antes, que los campos estén completos y que la contraseña cumpla los requisitos
+    let usuarioYaExiste=null;
+   
     if(validaRegisterPass==true){
-        let existe = false;
         users.forEach(function(value){
             if(registerUserName == value.username){
-                alert("El usuario ya existe") 
-                existe = true;
+                usuarioYaExiste=true;
             }
+    
         });
-        if(existe == false){
+        
+        if(usuarioYaExiste==true){
+            alert("El usuario ya existe")
+        }
+        if(usuarioYaExiste!=true){
+            alert("Se creo el usuario de forma correcta")
             users.push(new User(getAutoIncrementId(users),registerName, registerUserName.toLowerCase(),registerPass,"persona"));
             loggedScreen = "#RegisterScreen" 
             hide("RegisterScreen")
             show("LoginScreen")
-            alert("Usuario creado exitosamente")
         }
 
     }
-
+    
+    
 }
 //Funcionalidad de botones *HOME**INFO**LOGOUT**&&LobbyLocal(realizar reservas)
 let resusuario=0;
